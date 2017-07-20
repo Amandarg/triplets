@@ -73,7 +73,7 @@ def procrustes(X, Y, scaling=True, reflection='best'):
     tform = {'rotation':T, 'scale':b, 'translation':c}
     return d, Z, tform
 
-n, d = 40, 2
+n, d = 200, 2
 #train_size = 80000
 #test_size = 1000
 #np.random.seed(1000)
