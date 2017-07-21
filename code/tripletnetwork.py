@@ -2,6 +2,7 @@ import random
 import tensorflow as tf
 import numpy as np
 import matplotlib.pyplot as plt
+import os
 
 def triplets(n, d, train, test):
     '''
@@ -73,7 +74,7 @@ def procrustes(X, Y, scaling=True, reflection='best'):
     tform = {'rotation':T, 'scale':b, 'translation':c}
     return d, Z, tform
 
-n, d = 200, 2
+n, d = 50, 2
 #train_size = 80000
 #test_size = 1000
 #np.random.seed(1000)
@@ -86,7 +87,7 @@ train_size = len(train['samples'])
 # Build the Triplet Net
 # W - rows of W will be our learned embedding
 #W = tf.Variable(tf.random_normal([n, 2], 0., 1), name="weights")
-W = tf.Variable(tf.random_normal([n, 2], 0., 10000), name="weights")
+W = tf.Variable(tf.random_normal([n, 2], 0., 1000), name="weights")
 head = tf.placeholder(tf.float32, [None, n])
 left = tf.placeholder(tf.float32, [None, n])
 right = tf.placeholder(tf.float32, [None, n])
@@ -122,7 +123,7 @@ sess = tf.InteractiveSession()
 
 # Setup the optimizer and pass in the loss function/all the data batched in sets of 100 for SGD
 global_step = tf.Variable(1.0, trainable=False)
-learning_rate = tf.train.exponential_decay(.1, global_step, len(head_data), .5)
+learning_rate = tf.train.exponential_decay(.1, global_step, len(head_data), .9)
 
 train_step = tf.train.GradientDescentOptimizer(learning_rate).minimize(loss, global_step=global_step)
 var_grad = tf.gradients(loss, W)[0]
@@ -138,8 +139,10 @@ initials = sess.run([W, loss, y*p, 1.-tf.reduce_sum(y*p, reduction_indices=[1])]
                                                           right: right_data,
                                                   y: train['labels']})
 Winitial = initials[0]
+iteration = 0
 delta = 100
 for _ in range(2000):
+    iteration +=1
     print('iter {}'.format(_))
     x = sess.run([accuracy, loss, var_grad, learning_rate],
                           feed_dict={head: test_head_data,
@@ -172,6 +175,12 @@ result_train = sess.run([accuracy, W], feed_dict={head: head_data,
                                                   right: right_data,
                                                   y: train['labels']})
 print('Accuracy on train set:', result_train[0], result_train[1])
+
+data = np.array([float(os.getenv('PBS_ARRAYID'))])   # get m from PBS array
+
+fname = 'embed_50' + str(int(data[0])) + '.txt'
+write_file = [result_test[2],  result_test[0], iteration]
+np.savetxt(fname,write_file)
 
 # Procrustes and plot
 if d==2:
