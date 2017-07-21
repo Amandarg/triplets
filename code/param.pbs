@@ -1,0 +1,21 @@
+#PBS -N param_sweep
+#PBS -V
+
+#PBS -l walltime=3:00:00,qos=flux
+#PBS -l procs=1,pmem=1000mb
+#PBS -j oe
+
+#PBS -q flux
+#PBS -A girasole_flux
+
+#PBS -t 1-10%10
+
+#PBS -o logs/
+#PBS -e logs/
+
+# Change to where your program files live, here assume it is work
+# under your home directory
+cd $PBS_O_WORKDIR
+
+# Run the input file
+python trip_net_rand_param.py
