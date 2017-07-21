@@ -15,5 +15,7 @@ for experiment in range(100):
 
 data = np.array([float(os.getenv('PBS_ARRAYID'))])   # get m from PBS array
 
-triplet_network_randomized.find_embedding(int(parameter[int(data[0])][0]),int(parameter[int(data[0])][1]),int(parameter[int(data[0])][2]))
+index = int(data[0])
+
+triplet_network_randomized.find_embedding(int(parameter[index][0]),int(parameter[index][1]), parameter[index][2])
 

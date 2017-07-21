@@ -101,7 +101,7 @@ def find_embedding(exp_num, n,decay_rate):
     decay = str(decay_rate)
     items = str(n)
 
-    fname = exp_num + '/' + 'triplet_result_' + items + '_' + exp + '_' + decay + '.txt'
+    fname = items  + '/' + 'triplet_result_' + items + '_' + decay + '_' + exp  + '.txt'
 
     with open(fname, 'w') as file_handler:
         data = []
