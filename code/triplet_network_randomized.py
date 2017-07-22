@@ -101,7 +101,7 @@ def find_embedding(exp_num, n,decay_rate):
     decay = str(decay_rate)
     items = str(n)
 
-    fname = exp_num + '/' + 'triplet_result_' + items + '_' + exp + '_' + decay + '.txt'
+    fname = items + '/' + 'triplet_result_' + items + '_' + exp + '_' + decay + '.txt'
 
     with open(fname, 'w') as file_handler:
         data = []
@@ -236,6 +236,7 @@ def find_embedding(exp_num, n,decay_rate):
         print('Accuracy on train set:', result_train[0]) # result_train[1])
         min_gap = np.min(np.abs(result_test[3]))
         print('min gap', min_gap)
+        print('total time', total_time)
 
         #Procrustes and plot
         if d==2:
